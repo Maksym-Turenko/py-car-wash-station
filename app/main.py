@@ -86,4 +86,3 @@ class CarWashStation:
              + new_rating) / (self.count_of_ratings + 1), 1
         )
         self.count_of_ratings += 1
-
