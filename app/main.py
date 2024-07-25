@@ -2,65 +2,55 @@ from typing import List
 
 
 class Car:
-    def __init__(self,
-                 comfort_class: int,
-                 clean_mark: int,
-                 brand: str) -> None:
-        self.comfort_class = self.validate_comfort_class(comfort_class)
-        self.clean_mark = self.validate_clean_mark(clean_mark)
+    def __init__(
+            self,
+            comfort_class: int,
+            clean_mark: int,
+            brand: str) -> None:
+        self.comfort_class = self.validate_parameter(comfort_class, 1, 7, 3)
+        self.clean_mark = self.validate_parameter(clean_mark, 1, 10, 5)
         self.brand = brand
 
     @staticmethod
-    def validate_comfort_class(comfort_class: int) -> int:
-        if 1 <= comfort_class <= 7:
-            return comfort_class
-        return 3
-
-    @staticmethod
-    def validate_clean_mark(clean_mark: int) -> int:
-        if 1 <= clean_mark <= 10:
-            return clean_mark
-        return 5
+    def validate_parameter(
+            value: int,
+            min_value: int,
+            max_value: int,
+            default: int) -> int:
+        if min_value <= value <= max_value:
+            return value
+        return default
 
 
 class CarWashStation:
-    def __init__(self,
-                 distance_from_city_center: float,
-                 clean_power: int,
-                 average_rating: int,
-                 count_of_ratings: int) -> None:
-        self.distance_from_city_center = self.validate_distance(
-            distance_from_city_center
+    def __init__(
+            self,
+            distance_from_city_center: float,
+            clean_power: int,
+            average_rating: int,
+            count_of_ratings: int) -> None:
+        self.distance_from_city_center = self.validate_parameter(
+            distance_from_city_center, 0, float("inf"), 1.0
         )
-        self.clean_power = self.validate_clean_power(clean_power)
-        self.average_rating = self.validate_average_rating(average_rating)
-        self.count_of_ratings = self.validate_count_of_ratings(
-            count_of_ratings
+        self.clean_power = self.validate_parameter(
+            clean_power, 1, 10, 5
+        )
+        self.average_rating = self.validate_parameter(
+            average_rating, 1, 5, 3
+        )
+        self.count_of_ratings = self.validate_parameter(
+            count_of_ratings, 0, float("inf"), 0
         )
 
     @staticmethod
-    def validate_distance(distance: float) -> float:
-        if distance > 0:
-            return distance
-        return 1.0
-
-    @staticmethod
-    def validate_clean_power(clean_power: int) -> int:
-        if 1 <= clean_power <= 10:
-            return clean_power
-        return 5
-
-    @staticmethod
-    def validate_average_rating(average_rating: int) -> int:
-        if 1 <= average_rating <= 5:
-            return average_rating
-        return 3
-
-    @staticmethod
-    def validate_count_of_ratings(count_of_ratings: int) -> int:
-        if count_of_ratings >= 0:
-            return count_of_ratings
-        return 0
+    def validate_parameter(
+            value: float,
+            min_value: float,
+            max_value: float,
+            default: float) -> float:
+        if min_value <= value <= max_value:
+            return value
+        return default
 
     def serve_cars(self, cars: List[Car]) -> float:
         income = 0.0
@@ -71,10 +61,12 @@ class CarWashStation:
         return round(income, 1)
 
     def calculate_washing_price(self, car: Car) -> float:
-        return round(((car.comfort_class
-                       * (self.clean_power - car.clean_mark)
-                       * self.average_rating)
-                      / self.distance_from_city_center), 1)
+        price = ((
+            car.comfort_class
+            * (self.clean_power - car.clean_mark)
+            * self.average_rating)
+            / self.distance_from_city_center)
+        return round(price, 1)
 
     def wash_single_car(self, car: Car) -> None:
         if self.clean_power > car.clean_mark:
